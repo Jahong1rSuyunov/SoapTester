@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.8.34316.72
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SoapTester", "SoapTester\SoapTester.csproj", "{C368028E-E6DA-4D4F-9E3D-4057EAF02B54}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C368028E-E6DA-4D4F-9E3D-4057EAF02B54}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C368028E-E6DA-4D4F-9E3D-4057EAF02B54}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C368028E-E6DA-4D4F-9E3D-4057EAF02B54}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C368028E-E6DA-4D4F-9E3D-4057EAF02B54}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {4AAAF047-AF26-43A6-8A44-365C3A8BFB81}
+	EndGlobalSection
+EndGlobal
