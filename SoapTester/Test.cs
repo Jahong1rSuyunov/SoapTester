@@ -1,5 +1,4 @@
-﻿using CoAP;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -14,7 +13,7 @@ namespace SoapTester
         public static void Run()
         {
             // WSDL manzili
-            string wsdlUrl = "http://www.dneonline.com/calculator.asmx?wsdl";
+            string wsdlUrl = "http://webservices.oorsprong.org/websamples.countryinfo/CountryInfoService.wso?wsdl";
 
             XDocument xmlDoc = XDocument.Load(wsdlUrl);
 
@@ -49,12 +48,21 @@ namespace SoapTester
             }
 
         }
-        public static void ConsoleWriteLine(XDocument xmlDoc, string messageName)
+        public static void ConsoleWriteLine(XDocument xmlDoc, string messageName, bool complexType = false)
         {
             XNamespace wsdl = "http://schemas.xmlsoap.org/wsdl/";
             XNamespace xs = "http://www.w3.org/2001/XMLSchema";
 
-            var elements = xmlDoc.Descendants(wsdl + "types")
+            IEnumerable<XElement> elements;
+
+            if (complexType)
+            elements = xmlDoc.Descendants(wsdl + "types")
+                           .Elements(xs + "schema")
+                           .Elements(xs + "complexType").FirstOrDefault(e => e.Attribute("name")?.Value == messageName)
+                           .Elements(xs + "sequence")
+                           .Elements(xs + "element");
+            else
+                elements = xmlDoc.Descendants(wsdl + "types")
                            .Elements(xs + "schema")
                            .Elements(xs + "element").FirstOrDefault(e => e.Attribute("name")?.Value == messageName)
                            .Elements(xs + "complexType")
@@ -67,6 +75,14 @@ namespace SoapTester
                 string type = element.Attribute("type")?.Value;
 
                 Console.WriteLine($"    Name: {name}, Type: {type}");
+
+                if (type.StartsWith("tns:"))
+                {
+                    Console.WriteLine($"{name} in:");
+                    ConsoleWriteLine(xmlDoc, type.Substring("tns:".Length), true);
+                   
+                }
+                
             }
 
         }
