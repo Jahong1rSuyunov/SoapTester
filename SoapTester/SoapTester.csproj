@@ -8,8 +8,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Castle.Core" Version="5.1.1" />
+    <PackageReference Include="System.Runtime" Version="4.3.1" />
     <PackageReference Include="System.ServiceModel.Http" Version="6.2.0" />
     <PackageReference Include="System.Web.Services.Description" Version="6.2.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="soapversion\" />
   </ItemGroup>
 
 </Project>

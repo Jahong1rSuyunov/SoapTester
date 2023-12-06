@@ -17,23 +17,21 @@ namespace SoapTester
 {
     public class TestCall
     {
-        public async static void Call()
+        public static void Call()
         {
             try
             {
-                string soapEndpoint = "http://www.dneonline.com/calculator.asmx";
-                string soapAction = "http://tempuri.org/Multiply";
+                string soapEndpoint = "http://webservices.oorsprong.org/websamples.countryinfo/CountryInfoService.wso";
+                string soapAction = "http://www.oorsprong.org/websamples.countryinfo";
 
                 // Construct the SOAP request
-                string soapRequest = $@"<soapenv:Envelope xmlns:soapenv=""http://schemas.xmlsoap.org/soap/envelope/"" xmlns:web=""http://tempuri.org/"">
-                                       <soapenv:Header/>
-                                       <soapenv:Body>
-                                          <web:Multiply>
-                                             <web:intA>2</web:intA>
-                                             <web:intB>3</web:intB>
-                                          </web:Multiply>
-                                       </soapenv:Body>
-                                    </soapenv:Envelope>";
+                string soapRequest = $@"<?xml version=""1.0"" encoding=""utf-8""?>
+                                        <soapenv:Envelope xmlns:soapenv=""http://www.w3.org/2003/05/soap-envelope"">
+                                          <soapenv:Body>
+                                            <ListOfCurrenciesByName xmlns=""http://www.oorsprong.org/websamples.countryinfo"">
+                                            </ListOfCurrenciesByName>
+                                          </soapenv:Body>
+                                        </soapenv:Envelope>";
 
                 // Create the HTTP client
                 using (HttpClient client = new HttpClient())
@@ -46,35 +44,17 @@ namespace SoapTester
                     request.Content = new StringContent(soapRequest, Encoding.UTF8, "text/xml");
 
                     // Send the request and get the response
-                    HttpResponseMessage response = await client.SendAsync(request);
+                    HttpResponseMessage response = client.SendAsync(request).Result;
 
                     // Check if the request was successful
                     if (response.IsSuccessStatusCode)
                     {
                         // Read and process the SOAP response
-                        string soapResponse = await response.Content.ReadAsStringAsync();
+                        string soapResponse = response.Content.ReadAsStringAsync().Result;
 
                         XmlDocument xml = new XmlDocument();
                         xml.LoadXml(soapResponse);
                         Read(xml);
-
-                        string namespaceUri = "http://tempuri.org/";
-                        XmlNamespaceManager nsManager = new XmlNamespaceManager(xml.NameTable);
-                        nsManager.AddNamespace("ns", namespaceUri);
-
-                        XmlNode multiplyResultNode = xml.SelectSingleNode("//ns:MultiplyResult", nsManager);
-
-                        // Check if the node is found and extract the value
-                        if (multiplyResultNode != null)
-                        {
-                            string multiplyResultValue = xml.InnerText;
-                            Console.WriteLine("MultiplyResult Value: " + multiplyResultValue);
-                        }
-                        else
-                        {
-                            Console.WriteLine("MultiplyResult node not found.");
-                        }
-                        Console.WriteLine("SOAP Response:\n" + await response.Content.ReadAsStringAsync());
                     }
                     else
                     {

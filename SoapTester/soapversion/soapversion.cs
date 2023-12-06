@@ -1,10 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Web.Services.Description;
+﻿using System.Web.Services.Description;
+using System.Web.Services;
+using System.Web.Services.Configuration;
+using System.ServiceModel;
 using System.Xml.Linq;
+using System;
+using System.Net;
+using Castle.Components.DictionaryAdapter.Xml;
+using System.Xml;
 
 namespace SoapTester.soapversion
 {
@@ -16,22 +18,44 @@ namespace SoapTester.soapversion
 
             ServiceDescription serviceDescription = ServiceDescription.Read(xmlDoc.CreateReader());
 
+
+
+
+
+
+        }
+        public static string GetWsdlNamespace(ServiceDescription serviceDescription)
+        {
+            var result = string.Empty;
+            if (serviceDescription == null)
+            {
+                throw new ArgumentNullException(nameof(serviceDescription));
+            }
+
+            const string soap11Binding = "http://schemas.xmlsoap.org/soap/http";
+            const string soap12Binding = "http://www.w3.org/2003/05/soap/bindings/HTTP/";
+
             foreach (Binding binding in serviceDescription.Bindings)
             {
-                Type bindingType = binding.GetType();
-
-
-                if (bindingType == typeof(SoapBinding))
+                foreach (object extensibilityElement in binding.Extensions)
                 {
-                    // SOAP 1.1
-                    Console.WriteLine("SOAP 1.1 is used.");
-                }
-                else if (bindingType == typeof(Soap12Binding))
-                {
-                    // SOAP 1.2
-                    Console.WriteLine("SOAP 1.2 is used.");
+                    if (extensibilityElement is Soap12Binding)
+                    {
+                        if (((SoapBinding)extensibilityElement).Transport == soap11Binding)
+                        {
+                            result = "SOAP 1.1";
+                        }
+                        else if (((SoapBinding)extensibilityElement).Transport == soap12Binding)
+                        {
+                            result = "SOAP 1.2";
+                        }
+                        Console.WriteLine(result);
+                    }
                 }
             }
+
+            return result;
+
         }
     }
 }
