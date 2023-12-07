@@ -20,7 +20,7 @@ namespace SoapTester
             var desc = ServiceDescription.Read(xmlDoc.CreateReader());
             var wsdl = new WSDL();
             //var result = wsdl.GetWSDLService(desc);
-            wsdl.GetSchema(desc);
+            //wsdl.GetSchema(desc);
 
 
             //Console.WriteLine(JsonSerializer.Serialize(result));
@@ -42,7 +42,7 @@ namespace SoapTester
 
 
 
-            var url = "http://webservices.oorsprong.org/websamples.countryinfo/CountryInfoService.wso?wsdl";
+            var url = "http://www.dneonline.com/calculator.asmx?wsdl";
             Soapversion.GetSoapVersion(url);
 
 

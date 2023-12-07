@@ -7,6 +7,8 @@ using System;
 using System.Net;
 using Castle.Components.DictionaryAdapter.Xml;
 using System.Xml;
+using System.Xml.Schema;
+using System.Security.AccessControl;
 
 namespace SoapTester.soapversion
 {
@@ -18,9 +20,64 @@ namespace SoapTester.soapversion
 
             ServiceDescription serviceDescription = ServiceDescription.Read(xmlDoc.CreateReader());
 
+            // Choose the operation by name
+            string operationName = "MyOperation";
 
+            // Find the operation and its input message
+            Operation operation = serviceDescription.PortTypes[0].Operations[0];
+            OperationInput inputMessage = operation.Messages[0] as OperationInput;
 
+            // Get the input message schema
+            Message message = serviceDescription.Messages[inputMessage.Message.Name];
+            
+            string partName = message.Parts[0].Element.Name;
 
+            // Print the input schema details
+            Console.WriteLine("Input Schema:");
+            foreach (MessagePart part in message.Parts)
+            {
+                var schemas = serviceDescription.Types.Schemas[0].Items;
+
+                foreach (var schema in schemas)
+                {
+                    if (schema is XmlSchemaElement)
+                    {
+                        XmlSchemaElement schemaElement = schema as XmlSchemaElement;
+
+                        if(partName != schemaElement.Name) continue;
+
+                        Console.Out.WriteLine("Schema Element: {0}", schemaElement.Name);
+
+                        XmlSchemaType schemaType = schemaElement.SchemaType;
+                        XmlSchemaComplexType schemaComplexType = schemaType as XmlSchemaComplexType;
+
+                        if (schemaComplexType != null)
+                        {
+                            XmlSchemaSequence schemaSequence = schemaComplexType.Particle as XmlSchemaSequence;
+
+                            if (schemaSequence != null)
+                            {
+                                foreach (XmlSchemaElement childElement in schemaSequence.Items)
+                                {
+                                    Console.Out.WriteLine("    Element/Type: {0}:{1}", childElement.Name,
+                                                      childElement.SchemaTypeName.Name);
+                                }
+                            }
+                        }
+                    }
+                    else if (schema is XmlSchemaComplexType)
+                    {
+                        XmlSchemaComplexType schemaComplexType = schema as XmlSchemaComplexType;
+
+                    }                    
+                    else if (schema is XmlSchemaSimpleType)
+                    {
+                        XmlSchemaSimpleType schemaSimpleType = schema as XmlSchemaSimpleType;
+
+                    }
+                }
+
+            }
 
 
         }
